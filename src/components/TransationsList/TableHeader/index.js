@@ -9,7 +9,7 @@ const TableHeader = () => {
       <div className="column-title">Descrição</div>
       <div className="column-title">Categoria</div>
       <div className="column-title">Valor</div>
-      <div className="column-title"></div>
+      <div className="column-title">Extra</div>
     </div>
   );
 };
