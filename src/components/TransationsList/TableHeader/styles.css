@@ -15,3 +15,12 @@
   height: 45px;
   width: 150px;
 }
+
+.column-title span {
+  margin-right: 5px;
+}
+
+.column-title img {
+  width: 10px;
+  margin-top: 5px;
+}
