@@ -1,7 +1,21 @@
 main {
+  display: flex;
+  gap: 40px;
   background: #ffffff;
   border-radius: 60px 60px 0px 0px;
   height: calc(100vh - 220px);
   margin-top: -80px;
   padding: 50px 85px;
+}
+
+.btn-add-register {
+  margin-top: 16px;
+  border: none;
+  height: 42px;
+  width: 100%;
+  font-weight: 700;
+  font-size: 14px;
+  color: #ffffff;
+  background: linear-gradient(91.26deg, #fa8c10 0%, #ff57d3 97.77%);
+  border-radius: 5px;
 }
