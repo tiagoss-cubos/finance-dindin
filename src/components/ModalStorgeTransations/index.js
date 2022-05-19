@@ -1,4 +1,7 @@
-import React from "react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import React, { useEffect } from "react";
+import InputMask from "react-input-mask";
 import closeIcon from "../../assets/close-icon.svg";
 import "./styles.css";
 
@@ -9,18 +12,54 @@ const defaultValuesForm = {
   description: "",
 };
 
-const ModalStorgeTransations = ({ setOpen }) => {
+const ModalStorgeTransations = ({ open, setOpen }) => {
   const [activeButton, setActiveButton] = React.useState("credit");
   const [form, setForm] = React.useState(defaultValuesForm);
 
+  useEffect(() => {
+    open && setForm(defaultValuesForm);
+  }, [open]);
+
   function handleChange(target) {
-    setForm({ ...form, [target.name]: [target.value] });
+    setForm({ ...form, [target.name]: target.value });
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    const [day, month, year] = form.date.split("/");
+    const selectDate = new Date(`${month}/${day}/${year}`);
+
+    const body = {
+      date: selectDate,
+      week_day: format(selectDate, "eee", { locale: ptBR }),
+      description: form.description,
+      value: form.value,
+      category: form.category,
+      type: activeButton,
+    };
+
+    const response = await fetch("http://localhost:3333/transactions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    await response.json();
+    setOpen(false);
   }
 
   return (
-    <div className="modal">
+    <div className="modal" style={{ display: !open && "none" }}>
       <div className="modal-content modal-storage">
-        <img className="close-icon" src={closeIcon} alt="close icon"></img>
+        <img
+          className="close-icon"
+          src={closeIcon}
+          alt="close icon"
+          onClick={() => setOpen(false)}
+        ></img>
         <h2>Adicionar Registro</h2>
         <div className="container-buttons">
           <button
@@ -36,7 +75,7 @@ const ModalStorgeTransations = ({ setOpen }) => {
             Saída
           </button>
         </div>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div>
             <label>Valor</label>
             <input
@@ -57,12 +96,13 @@ const ModalStorgeTransations = ({ setOpen }) => {
           </div>
           <div>
             <label>Data</label>
-            <input
+            <InputMask
+              mask="99/99/9999"
               type="text"
               name="date"
               value={form.date}
               onChange={(event) => handleChange(event.target)}
-            ></input>
+            ></InputMask>
           </div>
           <div>
             <label>Descrição</label>

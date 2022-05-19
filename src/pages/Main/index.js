@@ -6,7 +6,7 @@ import TransationsList from "../../components/TransationsList";
 import "./styles.css";
 
 function Main() {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   return (
     <div className="App">
       <Header></Header>
@@ -14,10 +14,12 @@ function Main() {
         <TransationsList />
         <div>
           <Resume />
-          <button className="btn-add-register">Adicionar Registro</button>
+          <button className="btn-add-register" onClick={() => setOpen(true)}>
+            Adicionar Registro
+          </button>
         </div>
       </main>
-      {open && <ModalStorgeTransations setOpen={setOpen} />}
+      <ModalStorgeTransations open={open} setOpen={setOpen} />
     </div>
   );
 }
