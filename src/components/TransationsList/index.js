@@ -3,23 +3,35 @@ import "./styles.css";
 import TableHeader from "./TableHeader";
 import editIcon from "../../assets/edit-icon.svg";
 import deleteIcon from "../../assets/delete-icon.svg";
+import {
+  formatToMoney,
+  formatToDate,
+  formatToDay,
+} from "../../utils/formatter";
 
-const TransationsList = () => {
+const TransationsList = ({ transactions }) => {
   return (
     <div className="table">
       <TableHeader />
       <div className="table-body">
-        <div className="table-line">
-          <div className="line-items">01/09/21</div>
-          <div className="line-items">Quarta</div>
-          <div className="line-items">Venda dos brigadeiros</div>
-          <div className="line-items">Pix</div>
-          <div className="line-items">R$ 100,00</div>
-          <div className="line-items">
-            <img src={editIcon} alt="edit-icon"></img>
-            <img src={deleteIcon} alt="delete-icon"></img>
+        {transactions.map((item) => (
+          <div className="table-line" key={item.id}>
+            <div className="line-items">{formatToDate(item.date)}</div>
+            <div className="line-items">{formatToDay(item.week_day)}</div>
+            <div className="line-items">{item.description}</div>
+            <div className="line-items">{item.category}</div>
+            <div
+              className="line-items"
+              style={{ color: item.type === "credit" ? "blue" : "red" }}
+            >
+              {formatToMoney(item.value)}
+            </div>
+            <div className="line-items">
+              <img src={editIcon} alt="edit-icon"></img>
+              <img src={deleteIcon} alt="delete-icon"></img>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
