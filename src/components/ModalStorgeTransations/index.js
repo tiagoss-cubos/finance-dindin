@@ -12,16 +12,53 @@ const defaultValuesForm = {
   description: "",
 };
 
-const ModalStorgeTransations = ({ open, setOpen }) => {
+const ModalStorgeTransations = ({ open, setOpen, currentTransaction }) => {
   const [activeButton, setActiveButton] = React.useState("credit");
   const [form, setForm] = React.useState(defaultValuesForm);
 
   useEffect(() => {
-    open && setForm(defaultValuesForm);
-  }, [open]);
+    if (open && !currentTransaction) {
+      setForm(defaultValuesForm);
+      return;
+    }
+
+    if (currentTransaction) {
+      setActiveButton(currentTransaction.type);
+
+      setForm({
+        date: format(new Date(currentTransaction.date), "dd/MM/yyy"),
+        category: currentTransaction.category,
+        value: currentTransaction.value,
+        description: currentTransaction.description,
+      });
+    }
+  }, [currentTransaction, open]);
 
   function handleChange(target) {
     setForm({ ...form, [target.name]: target.value });
+  }
+
+  async function updateTransaction(body) {
+    return await fetch(
+      `http://localhost:3333/transactions/${currentTransaction.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+  }
+
+  async function registerTransaction(body) {
+    return await fetch("http://localhost:3333/transactions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
   }
 
   async function handleSubmit(event) {
@@ -39,15 +76,14 @@ const ModalStorgeTransations = ({ open, setOpen }) => {
       type: activeButton,
     };
 
-    const response = await fetch("http://localhost:3333/transactions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    if (currentTransaction) {
+      await updateTransaction(body);
+      setOpen(false);
+      return;
+    }
 
-    await response.json();
+    await registerTransaction(body);
+
     setOpen(false);
   }
 

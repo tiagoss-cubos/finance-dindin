@@ -8,10 +8,23 @@ import "./styles.css";
 function Main() {
   const [open, setOpen] = React.useState(false);
   const [transactions, setTransactions] = React.useState([]);
+  const [currentTransaction, setCurrentTransaction] = React.useState(false);
 
   useEffect(() => {
-    handleLoadTransactions();
-  }, []);
+    if (currentTransaction) {
+      setOpen(true);
+    }
+  }, [currentTransaction]);
+
+  useEffect(() => {
+    if (!open) {
+      handleLoadTransactions();
+    }
+    if (!open && currentTransaction) {
+      setCurrentTransaction(false);
+    }
+    // eslint-disable-next-line
+  }, [open]);
 
   async function handleLoadTransactions() {
     const response = await fetch("http://localhost:3334/transactions", {
@@ -21,19 +34,27 @@ function Main() {
     const data = await response.json();
     setTransactions(data);
   }
+
   return (
     <div className="App">
       <Header></Header>
       <main>
-        <TransationsList transactions={transactions} />
+        <TransationsList
+          transactions={transactions}
+          setCurrentTransaction={setCurrentTransaction}
+        />
         <div>
-          <Resume />
+          <Resume transactions={transactions} />
           <button className="btn-add-register" onClick={() => setOpen(true)}>
             Adicionar Registro
           </button>
         </div>
       </main>
-      <ModalStorgeTransations open={open} setOpen={setOpen} />
+      <ModalStorgeTransations
+        open={open}
+        setOpen={setOpen}
+        currentTransaction={currentTransaction}
+      />
     </div>
   );
 }

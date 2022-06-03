@@ -9,7 +9,9 @@ import {
   formatToDay,
 } from "../../utils/formatter";
 
-const TransationsList = ({ transactions }) => {
+const TransationsList = ({ transactions, setCurrentTransaction }) => {
+  function handleDeleteItem(item) {}
+
   return (
     <div className="table">
       <TableHeader />
@@ -27,8 +29,18 @@ const TransationsList = ({ transactions }) => {
               {formatToMoney(item.value)}
             </div>
             <div className="line-items">
-              <img src={editIcon} alt="edit-icon"></img>
-              <img src={deleteIcon} alt="delete-icon"></img>
+              <img
+                className="action-button"
+                src={editIcon}
+                alt="edit-icon"
+                onClick={() => setCurrentTransaction(item)}
+              ></img>
+              <img
+                className="action-button"
+                src={deleteIcon}
+                alt="delete-icon"
+                onClick={() => handleDeleteItem(item)}
+              ></img>
             </div>
           </div>
         ))}
