@@ -9,6 +9,11 @@ function Main() {
   const [open, setOpen] = React.useState(false);
   const [transactions, setTransactions] = React.useState([]);
   const [currentTransaction, setCurrentTransaction] = React.useState(false);
+  const [reload, setReload] = React.useState(false);
+
+  useEffect(() => {
+    handleLoadTransactions();
+  }, [reload]);
 
   useEffect(() => {
     if (currentTransaction) {
@@ -42,6 +47,8 @@ function Main() {
         <TransationsList
           transactions={transactions}
           setCurrentTransaction={setCurrentTransaction}
+          reload={reload}
+          setReload={setReload}
         />
         <div>
           <Resume transactions={transactions} />

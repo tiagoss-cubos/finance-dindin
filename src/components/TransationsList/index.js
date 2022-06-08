@@ -3,14 +3,29 @@ import "./styles.css";
 import TableHeader from "./TableHeader";
 import editIcon from "../../assets/edit-icon.svg";
 import deleteIcon from "../../assets/delete-icon.svg";
+import ConfirmChoose from "../ConfirmChoose";
 import {
   formatToMoney,
   formatToDate,
   formatToDay,
 } from "../../utils/formatter";
 
-const TransationsList = ({ transactions, setCurrentTransaction }) => {
-  function handleDeleteItem(item) {}
+const TransationsList = ({
+  transactions,
+  setCurrentTransaction,
+  reload,
+  setReload,
+}) => {
+  const [idItemDelete, setIdItemDelete] = React.useState(null);
+
+  async function handleDeleteItem() {
+    await fetch(`http://localhost:3334/transactions/${idItemDelete}`, {
+      method: "DELETE",
+    });
+
+    setIdItemDelete(null);
+    setReload(!reload);
+  }
 
   return (
     <div className="table">
@@ -36,11 +51,17 @@ const TransationsList = ({ transactions, setCurrentTransaction }) => {
                 onClick={() => setCurrentTransaction(item)}
               ></img>
               <img
-                className="action-button"
                 src={deleteIcon}
                 alt="delete-icon"
-                onClick={() => handleDeleteItem(item)}
+                className="action-button"
+                onClick={() => setIdItemDelete(item.id)}
               ></img>
+              <ConfirmChoose
+                show={item.id === idItemDelete}
+                setClose={() => setIdItemDelete(null)}
+                message="Apagar item?"
+                handleConfirm={() => handleDeleteItem()}
+              ></ConfirmChoose>
             </div>
           </div>
         ))}
